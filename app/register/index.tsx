@@ -1,26 +1,29 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import firebaseApp from '../firebase';
+import { signup } from '@/services/auth';
 
-export default function Signup() {
+export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const auth = getAuth(firebaseApp);
-
-    const handleSignUp = async () => {
+    const handleSignup = async () => {
         try {
-            if (password == confirmPassword) {
-                await createUserWithEmailAndPassword(auth, email, password);
-                console.log('User created!');
+            const user = await signup(email, password, confirmPassword);
 
+            if (user) {
                 router.push('/home');
             }
-        } catch (error) {
-            console.error('Auth error');
+            
+        } catch (error: any) {
+            if (error.code == "auth/email-already-in-use") {
+                alert("Email already in use");
+            } else if (error.code == "auth/weak-password") {
+                alert("Weak password");
+            } else {
+                alert("Signup error" + error);
+            }
         }
     };
 
@@ -47,7 +50,7 @@ export default function Signup() {
             <TextInput value={password} onChangeText={setPassword} style={styles.input} placeholder='Password' placeholderTextColor={"#ddd"} secureTextEntry />
             <TextInput value={confirmPassword} onChangeText={setConfirmPassword} style={styles.input} placeholder='Confirm Password' placeholderTextColor={"#ddd"} secureTextEntry />
             
-            <TouchableOpacity style={styles.mainButton} onPress={handleSignUp}>
+            <TouchableOpacity style={styles.mainButton} onPress={handleSignup}>
                     <Text style={{
                         textAlign: 'center',
                         fontWeight: 'bold',

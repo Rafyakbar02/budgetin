@@ -1,23 +1,25 @@
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
-import firebaseApp from '../firebase';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { login } from '@/services/auth';
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const auth = getAuth(firebaseApp);
-
     const handleLogin = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log('User signed in!');
+            const user = await login(email, password);
 
-            router.push('/home');
-        } catch (error) {
-            console.error('Auth error');
+            if (user) {
+                router.push('/home');
+            }
+        } catch (error: any) {
+            if (error.code == "auth/user-not-found" || error.code == "auth/wrong-password") {
+                alert("Invalid email or password. Please try again");
+            } else {
+                alert("Sign-in error: " + error);
+            }
         }
     };
 
@@ -59,12 +61,12 @@ export default function Login() {
             />
             
             <TouchableOpacity style={styles.mainButton} onPress={handleLogin}>
-                    <Text style={{
-                        textAlign: 'center',
-                        fontWeight: 'bold',
-                        color: '#fff'
-                    }}>Lanjut</Text>
-                </TouchableOpacity>
+                <Text style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    color: '#fff'
+                }}>Lanjut</Text>
+            </TouchableOpacity>
         </View>
     )
 }

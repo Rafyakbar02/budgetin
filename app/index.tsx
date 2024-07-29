@@ -31,7 +31,7 @@ export default function FirstScreen() {
                 }}>Masuk</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push('/signup')}>
+            <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push('/register')}>
                 <Text style={{
                     textAlign: 'center',
                     fontWeight: 'bold',

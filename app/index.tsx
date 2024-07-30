@@ -1,18 +1,10 @@
 import { router } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { commonStyles } from "@/styles/util";
 
-export default function FirstScreen() {
+export default function App() {
     return (
-        <View style={{
-            display: 'flex',
-            height: '100%',
-            width: '100%',
-            backgroundColor: '#fff',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 10,
-            padding: 20
-        }}>
+        <View style={commonStyles.bgWhite}>
             <Text style={{
                 fontSize: 35,
                 fontWeight: 'bold',
@@ -23,20 +15,12 @@ export default function FirstScreen() {
                 marginBottom: 20
             }}>Personal budgeting kamu</Text>
 
-            <TouchableOpacity style={styles.mainButton} onPress={() => router.push('/login')}>
-                <Text style={{
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    color: '#fff'
-                }}>Masuk</Text>
+            <TouchableOpacity style={commonStyles.primaryButton} onPress={() => router.push('/login')}>
+                <Text style={commonStyles.textPrimaryButton}>Masuk</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.secondaryButton} onPress={() => router.push('/register')}>
-                <Text style={{
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    color: '#47ba54'
-                }}>Daftar</Text>
+            <TouchableOpacity style={commonStyles.secondaryButton} onPress={() => router.push('/register')}>
+                <Text style={commonStyles.textSecondaryButton}>Daftar</Text>
             </TouchableOpacity>
 
             <Text style={{
@@ -48,23 +32,3 @@ export default function FirstScreen() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    mainButton: {
-        backgroundColor: '#47ba54',
-        padding: 15,
-        paddingHorizontal: 5,
-        width: '100%',
-        borderRadius: 99,
-    },
-
-    secondaryButton: {
-        backgroundColor: '#fff',
-        padding: 15,
-        paddingHorizontal: 5,
-        width: '100%',
-        borderRadius: 99,
-        borderColor: '#47ba54',
-        borderWidth: 1.5
-    }
-})

@@ -1,10 +1,13 @@
 import { router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { commonStyles } from "@/styles/util";
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
     return (
         <View style={commonStyles.bgWhite}>
+            <StatusBar style="dark"/>
+
             <Text style={{
                 fontSize: 35,
                 fontWeight: 'bold',

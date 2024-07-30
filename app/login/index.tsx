@@ -1,8 +1,9 @@
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
+import { Text, TextInput, View, TouchableOpacity } from 'react-native'
 import { login } from '@/services/auth';
 import { commonStyles } from '@/styles/util';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function Login() {
             const user = await login(email, password);
 
             if (user) {
-                router.push('/home');
+                router.push('/budget');
             }
         } catch (error: any) {
             if (error.code == "auth/user-not-found" || error.code == "auth/wrong-password") {
@@ -26,6 +27,8 @@ export default function Login() {
 
     return (
         <View style={commonStyles.bgWhite}>
+            <StatusBar style='dark' />
+
             <Text style={{
                     fontSize: 35,
                     fontWeight: 'bold',

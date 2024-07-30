@@ -3,6 +3,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { signup } from '@/services/auth';
 import { commonStyles } from '@/styles/util';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export default function Register() {
             const user = await signup(email, password, confirmPassword);
 
             if (user) {
-                router.push('/home');
+                router.push('/budget');
             }
             
         } catch (error: any) {
@@ -30,6 +31,8 @@ export default function Register() {
 
     return (
         <View style={commonStyles.bgWhite}>
+            <StatusBar style='dark'/>
+
             <Text style={{
                     fontSize: 35,
                     fontWeight: 'bold',
@@ -43,7 +46,7 @@ export default function Register() {
             <TextInput value={confirmPassword} onChangeText={setConfirmPassword} style={commonStyles.input} placeholder='Confirm Password' placeholderTextColor={"#ddd"} secureTextEntry />
             
             <TouchableOpacity style={commonStyles.primaryButton} onPress={handleSignup}>
-                    <Text style={commonStyles.textPrimaryButton}>Lanjut</Text>
+                <Text style={commonStyles.textPrimaryButton}>Lanjut</Text>
             </TouchableOpacity>
         </View>
     )

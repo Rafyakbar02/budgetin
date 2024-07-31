@@ -1,33 +1,48 @@
-import { Text, TextInput, View, TouchableOpacity } from 'react-native'
+import { Text, TextInput, View, TouchableOpacity, Alert } from 'react-native'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { signup } from '@/services/auth';
 import { commonStyles } from '@/styles/util';
 import { StatusBar } from 'expo-status-bar';
+import { supabase } from '@/services/supabase';
 
 export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSignup = async () => {
+    const signUp = async () => {
         try {
-            const user = await signup(email, password, confirmPassword);
+            setLoading(true);
 
-            if (user) {
-                router.push('/budget');
+            if (password != confirmPassword) {
+                throw "Passwords do not match";
             }
-            
-        } catch (error: any) {
-            if (error.code == "auth/email-already-in-use") {
-                alert("Email already in use");
-            } else if (error.code == "auth/weak-password") {
-                alert("Weak password");
+
+            const { error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName
+                    }
+                }
+            });
+
+            if (error) {
+                throw error;
             } else {
-                alert("Signup error" + error);
+                router.push("/budget");
             }
+
+            setLoading(false);
+        } catch (error) {
+            alert(error)
         }
-    };
+    }
 
     return (
         <View style={commonStyles.bgWhite}>
@@ -41,11 +56,13 @@ export default function Register() {
                 marginBottom: 20
             }}>Lengkapi data di bawah</Text>
             
+            <TextInput value={firstName} onChangeText={setFirstName} style={commonStyles.input} placeholder='First name' placeholderTextColor={"#ddd"} />
+            <TextInput value={lastName} onChangeText={setLastName} style={commonStyles.input} placeholder='Last name' placeholderTextColor={"#ddd"} />
             <TextInput value={email} onChangeText={setEmail} style={commonStyles.input} placeholder='Email' placeholderTextColor={"#ddd"} />
             <TextInput value={password} onChangeText={setPassword} style={commonStyles.input} placeholder='Password' placeholderTextColor={"#ddd"} secureTextEntry />
             <TextInput value={confirmPassword} onChangeText={setConfirmPassword} style={commonStyles.input} placeholder='Confirm Password' placeholderTextColor={"#ddd"} secureTextEntry />
             
-            <TouchableOpacity style={commonStyles.primaryButton} onPress={handleSignup}>
+            <TouchableOpacity style={commonStyles.primaryButton} onPress={signUp} disabled={loading}>
                 <Text style={commonStyles.textPrimaryButton}>Lanjut</Text>
             </TouchableOpacity>
         </View>

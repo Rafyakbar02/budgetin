@@ -1,29 +1,32 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity, Alert } from 'react-native'
+import React, { useState } from 'react'
 import { commonStyles } from '@/styles/util'
-import { getAuth, signOut } from 'firebase/auth'
-import { app } from '@/services/firebase';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { supabase } from '@/services/supabase';
 
 export default function setting() {
-  const auth = getAuth(app);
+  const [loading, setLoading] = useState(false);
 
-  const handleSignout = async () => {
-    try {
-      signOut(auth);
 
-      console.log("User logged out!")
-      router.navigate("/");
-    } catch (error) {
-      alert(error);
+  const signOut = async () => {
+    setLoading(true);
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      Alert.alert(error.message);
     }
+
+    router.navigate('/');
+
+    setLoading(false);
   }
 
   return (
     <View style={commonStyles.bgWhite}>
       <StatusBar style='dark' />
-      <TouchableOpacity style={commonStyles.primaryButton} onPress={handleSignout}>
+      <TouchableOpacity style={commonStyles.primaryButton} onPress={signOut}>
         <Text style={commonStyles.textPrimaryButton}>Sign Out</Text>
       </TouchableOpacity>
     </View>

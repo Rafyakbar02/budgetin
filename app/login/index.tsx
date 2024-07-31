@@ -1,28 +1,30 @@
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Text, TextInput, View, TouchableOpacity } from 'react-native'
-import { login } from '@/services/auth';
+import { Text, TextInput, View, TouchableOpacity, Alert } from 'react-native'
 import { commonStyles } from '@/styles/util';
 import { StatusBar } from 'expo-status-bar';
+import { supabase } from '@/services/supabase';
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = async () => {
-        try {
-            const user = await login(email, password);
+    const signIn = async () => {
+        setLoading(true);
+        
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
 
-            if (user) {
-                router.push('/budget');
-            }
-        } catch (error: any) {
-            if (error.code == "auth/user-not-found" || error.code == "auth/wrong-password") {
-                alert("Invalid email or password. Please try again");
-            } else {
-                alert("Sign-in error: " + error);
-            }
+        if (error) {
+            Alert.alert(error.message);
+        } else {
+            router.push('/budget');
         }
+
+        setLoading(false);
     };
 
     return (
@@ -55,7 +57,7 @@ export default function Login() {
                 secureTextEntry
             />
             
-            <TouchableOpacity style={commonStyles.primaryButton} onPress={handleLogin}>
+            <TouchableOpacity style={commonStyles.primaryButton} onPress={signIn} disabled={loading}>
                 <Text style={commonStyles.textPrimaryButton}>Lanjut</Text>
             </TouchableOpacity>
         </View>

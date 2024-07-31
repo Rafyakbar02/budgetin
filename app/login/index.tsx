@@ -11,20 +11,23 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const signIn = async () => {
-        setLoading(true);
+		try {
+			setLoading(true);
         
-        const { error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
+			const { error } = await supabase.auth.signInWithPassword({
+				email: email,
+				password: password
+			});
 
-        if (error) {
-            Alert.alert(error.message);
-        } else {
-            router.push('/budget');
-        }
+			if (error) {
+				throw error;
+			}
 
-        setLoading(false);
+			router.push('/budget');
+			setLoading(false);
+		} catch (error) {
+			alert(error)
+		}
     };
 
     return (

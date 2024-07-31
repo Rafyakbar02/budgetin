@@ -5,30 +5,33 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { supabase } from '@/services/supabase';
 
-export default function setting() {
-  const [loading, setLoading] = useState(false);
+export default function Setting() {
+  	const [loading, setLoading] = useState(false);
 
+	const signOut = async () => {
+		try {
+			setLoading(true);
 
-  const signOut = async () => {
-    setLoading(true);
+			const { error } = await supabase.auth.signOut();
 
-    const { error } = await supabase.auth.signOut();
+			if (error) {
+				throw error;
+			}
 
-    if (error) {
-      Alert.alert(error.message);
-    }
+			router.navigate('/');
 
-    router.navigate('/');
+			setLoading(false);
+		} catch (error) {
+			alert(error)
+		}
+	}
 
-    setLoading(false);
-  }
-
-  return (
-    <View style={commonStyles.bgWhite}>
-      <StatusBar style='dark' />
-      <TouchableOpacity style={commonStyles.primaryButton} onPress={signOut}>
-        <Text style={commonStyles.textPrimaryButton}>Sign Out</Text>
-      </TouchableOpacity>
-    </View>
-  )
+	return (
+		<View style={commonStyles.bgWhite}>
+		<StatusBar style='dark' />
+		<TouchableOpacity style={commonStyles.primaryButton} onPress={signOut} disabled={loading}>
+			<Text style={commonStyles.textPrimaryButton}>Sign Out</Text>
+		</TouchableOpacity>
+		</View>
+	)
 }

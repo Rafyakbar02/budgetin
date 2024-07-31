@@ -34,10 +34,9 @@ export default function Register() {
 
             if (error) {
                 throw error;
-            } else {
-                router.push("/budget");
             }
-
+            
+            router.push("/budget");
             setLoading(false);
         } catch (error) {
             alert(error)

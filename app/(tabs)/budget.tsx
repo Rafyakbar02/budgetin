@@ -1,12 +1,12 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { commonStyles } from '@/styles/util'
 import { StatusBar } from 'expo-status-bar';
 import { supabase } from '@/services/supabase';
-import Header from '@/components/Header';
 import { Session } from '@supabase/supabase-js';
+import Header from '@/components/Header';
+import Overview from '@/components/Overview';
 
-export default function budget() {
+export default function Budget() {
 	const [session, setSession] = useState<Session | null>(null);
 
 	useEffect(() => {
@@ -20,13 +20,23 @@ export default function budget() {
 	}, []);
 
 	return (
-		<View style={commonStyles.bgWhite}>
+		<View style={{
+			marginTop: 40,
+		}}>
 			<StatusBar style="dark" />	
 
-			<Text>budget</Text>
+			{session && session.user && (
+				<>
+					<Header session={session} />
+					<Overview />
+				</>
+			)}
+			
+
+			{/* <Text>budget</Text>
 			{session ? (
 				<Text>{session.user.user_metadata.first_name} {session.user.user_metadata.last_name}</Text>
-			) : <></>}
+			) : <></>} */}
 			
 			{/* {categories.length > 0 ? (
 				<View>

@@ -1,37 +1,32 @@
+import { Session } from '@supabase/supabase-js';
 import { View, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { app } from '@/services/firebase';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Link } from 'expo-router';
 
-export default function Header() {
-    const [initializing, setInitializing] = useState(true);
-	const [user, setUser] = useState<User | null>(null);
-	
-	const auth = getAuth(app);
+interface SessionProp {
+	session: Session;
+}
 
-	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
-			setUser(user);
+export default function Header({ session }: SessionProp ) {
+	const user = session.user.user_metadata;
+	const firstName = user.first_name;
+	const lastName = user.last_name;
 
-			if (initializing) {
-				setInitializing(false);
-			}
-		});
-
-		return () => unsubscribe();
-	}, [auth]);
-
-	if (initializing) {
-		
-	}
-
-  	return (
+	return (
 		<View style={{
-			marginTop: 20,
 			padding: 20,
-			backgroundColor: '#47ba54'
+			display: 'flex',
+			flexDirection: 'row',
+			alignItems: 'center',
+			justifyContent: 'space-between'
 		}}>
-		<Text>Header</Text>
+			<View>
+				<Text style={{ fontSize: 20 }}>Welcome, </Text>
+				<Text style={{ fontSize: 35, marginTop: 10 }}>{firstName} {lastName}</Text>
+			</View>
+			<Link href={'/add_new_category'}>
+				<AntDesign name="pluscircle" size={40} color="black" />
+			</Link>
 		</View>
-  )
+	)
 }
